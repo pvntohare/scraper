@@ -6,18 +6,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.scraper.handler.HtmlResponseHandler;
-import org.scraper.handler.JsonResponseHandler;
 import org.scraper.handler.ResponseHandler;
+import org.scraper.handler.ResponseHandlerFactory;
 
 public class WebScraper {
     private final HttpClient httpClient;
     private final RateLimiter rateLimiter;
-    private final Map<String, ResponseHandler> handlers;
+    private final ResponseHandlerFactory handlerFactory;
 
     public WebScraper() {
         this(HttpClient.newBuilder()
@@ -28,9 +25,7 @@ public class WebScraper {
     public WebScraper(HttpClient httpClient, RateLimiter rateLimiter, ObjectMapper objectMapper) {
         this.httpClient = httpClient;
         this.rateLimiter = rateLimiter;
-        this.handlers = new HashMap<>();
-        this.handlers.put("text/html", new HtmlResponseHandler());
-        this.handlers.put("application/json", new JsonResponseHandler(objectMapper));
+        this.handlerFactory = new ResponseHandlerFactory(objectMapper);  // Use the factory
     }
 
     public String scrape(String url) throws IOException, InterruptedException {
@@ -40,8 +35,9 @@ public class WebScraper {
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        String contentType = response.headers().firstValue("Content-Type").orElse("text/html");
-        ResponseHandler handler = handlers.get(contentType.split(";")[0]);
+        String contentType = response.headers().firstValue("Content-Type").orElse("text/html").split(";")[0];
+
+        ResponseHandler handler = handlerFactory.getHandler(contentType);  // Get the appropriate handler
         if (handler == null) {
             throw new UnsupportedOperationException("Unsupported content type: " + contentType);
         }
