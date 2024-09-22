@@ -33,6 +33,15 @@ public class WebScraper {
         this.executorService = Executors.newFixedThreadPool(numThreads); // Thread pool
     }
 
+    // No-argument constructor (default constructor)
+    public WebScraper() {
+        this(HttpClient.newBuilder()
+                        .connectTimeout(Duration.ofSeconds(10))
+                        .build(),
+                new RateLimiter(10),
+                new ObjectMapper(), 10);
+    }
+
     public String scrape(String url) throws IOException, InterruptedException {
         rateLimiter.acquire();  // Apply rate-limiting logic
         HttpRequest request = HttpRequest.newBuilder()
