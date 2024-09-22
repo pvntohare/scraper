@@ -33,10 +33,6 @@ public class WebScraper {
         this.executorService = Executors.newFixedThreadPool(numThreads); // Thread pool
     }
 
-    public Future<String> scrapeAsync(String url) {
-        return executorService.submit(() -> scrape(url));
-    }
-
     public String scrape(String url) throws IOException, InterruptedException {
         rateLimiter.acquire();  // Apply rate-limiting logic
         HttpRequest request = HttpRequest.newBuilder()

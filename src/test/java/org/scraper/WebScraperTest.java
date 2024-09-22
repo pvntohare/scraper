@@ -70,58 +70,6 @@ class WebScraperTest {
     }
 
     @Test
-    void testScrapeAsyncMultipleUrls() throws IOException, InterruptedException, ExecutionException {
-
-        String htmlResponse1 = "<html><body><h1 class='product-title' data-id='aksjd76asd-sad3-saj09jso'>Product Title 1</h1></body></html>";
-        String htmlResponse2 = "<html><body><h1 class='product-title' data-id='aksjd76asd-sad3-saj09jso'>Product Title 2</h1></body></html>";
-        String htmlResponse3 = "<html><body><h1 class='product-title' data-id='aksjd76asd-sad3-saj09jso'>Product Title 3</h1></body></html>";
-
-        // Mock HTTP client behavior for multiple URLs
-        when(mockHttpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
-                .thenReturn(mockResponse);
-
-        when(mockResponse.headers()).thenReturn(HttpHeadersMock.create("text/html"));
-
-        when(mockResponse.body())
-                .thenReturn(htmlResponse1)  // First URL response
-                .thenReturn(htmlResponse2)  // Second URL response
-                .thenReturn(htmlResponse3); // Third URL response
-
-        // Define the URLs to scrape
-        List<String> urls = Arrays.asList(
-                "https://example.com/product-abc1.html",
-                "https://example.com/product-abc2.html",
-                "https://example.com/product-abc3.html"
-        );
-
-        // Submit each scraping task asynchronously
-        List<Future<String>> futures = new ArrayList<>();
-
-        for (String url : urls) {
-            futures.add(webScraper.scrapeAsync(url));
-        }
-
-        // Collect and verify the results
-        List<String> results = new ArrayList<>();
-
-        for (Future<String> future : futures) {
-            results.add(future.get());  // Wait for each async task to complete
-        }
-
-        // Define the expected results (order doesn't matter)
-        Set<String> expectedResults = Set.of(
-                "Product Title 1",
-                "Product Title 2",
-                "Product Title 3"
-        );
-
-        // Verify that all results match, irrespective of order
-        for (String res : results) {
-            assertTrue(expectedResults.contains(res));
-        }
-    }
-
-    @Test
     public void testScrapeAsyncMultipleUrlsWithScraperService() throws Exception {
 
         String htmlResponse1 = "<html><body><h1 class='product-title' data-id='aksjd76asd-sad3-saj09jso'>Product Title 1</h1></body></html>";
