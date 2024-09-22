@@ -1,0 +1,46 @@
+name: WebScraper CI Pipeline
+
+# Triggers the pipeline on push and pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Java environment (Java 17 as per your pom.xml)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      # Step 3: Cache Maven dependencies
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+
+      # Step 4: Build the project and run tests
+      - name: Build with Maven and run tests
+        run: mvn clean install
+
+      # Step 5: Report test results (optional)
+      - name: Archive test reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: target/surefire-reports/
