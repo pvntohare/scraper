@@ -15,6 +15,6 @@ public class JsonResponseHandler implements ResponseHandler {
     @Override
     public String handle(String responseBody) throws IOException {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        return jsonNode.toString();
+        return jsonNode.get("title").asText();  // Extract JSON title
     }
 }

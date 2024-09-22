@@ -1,17 +1,18 @@
 package org.scraper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.scraper.handler.ResponseHandler;
+import org.scraper.handler.ResponseHandlerFactory;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.scraper.handler.ResponseHandler;
-import org.scraper.handler.ResponseHandlerFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class WebScraper {
     private final HttpClient httpClient;
