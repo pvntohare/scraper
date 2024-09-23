@@ -1,6 +1,7 @@
 package org.scraper;
 
 import org.scraper.command.ScrapingCommand;
+import org.scraper.command.WebScraper;
 import org.scraper.observer.ScraperObserver;
 
 import java.util.ArrayList;
@@ -10,12 +11,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ScraperService {
-    private final WebScraper webScraper;
+    private final WebScraper webScraper;  // Singleton WebScraper
     private final ExecutorService executorService;
     private final List<ScraperObserver> observers;
 
-    public ScraperService(WebScraper webScraper, List<ScraperObserver> observers, int numThreads) {
-        this.webScraper = webScraper;
+    public ScraperService(List<ScraperObserver> observers, int numThreads) {
+        webScraper = WebScraper.getInstance();
         this.executorService = Executors.newFixedThreadPool(numThreads);
         this.observers = observers;
     }
@@ -25,7 +26,7 @@ public class ScraperService {
         List<Future<String>> futures = new ArrayList<>();
         try {
             for (String url : urls) {
-                ScrapingCommand command = new ScrapingCommand(url, this, observers);
+                ScrapingCommand command = new ScrapingCommand(url, observers);
                 Future<String> future = executorService.submit(command);  // Submit task and capture Future
                 futures.add(future);  // Add Future to list
             }

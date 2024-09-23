@@ -1,19 +1,18 @@
 package org.scraper.command;
 
-import org.scraper.ScraperService;
 import org.scraper.observer.ScraperObserver;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class ScrapingCommand implements Callable<String> {
+    private final WebScraper webScraper;  // Singleton WebScraper
     private final String url;
-    private final ScraperService scraperService;
     private final List<ScraperObserver> observers;
 
-    public ScrapingCommand(String url, ScraperService scraperService, List<ScraperObserver> observers) {
+    public ScrapingCommand(String url, List<ScraperObserver> observers) {
+        webScraper = WebScraper.getInstance();
         this.url = url;
-        this.scraperService = scraperService;
         this.observers = observers;
     }
 
@@ -21,7 +20,7 @@ public class ScrapingCommand implements Callable<String> {
     public String call() {
         try {
             notifyObserversStart();
-            String result = scraperService.scrapeSingleUrl(url);  // Executes the scraping
+            String result = webScraper.scrape(url);  // Executes the scraping
             notifyObserversSuccess(result);
             return result;
         } catch (Exception e) {
