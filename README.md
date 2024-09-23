@@ -23,7 +23,7 @@ This project is a web scraper that can parse data from websites returning HTML a
 - **Observer Pattern**: Integrated logging using observers to track when scraping starts, succeeds, or fails.
 - **Factory Pattern**: A `ResponseHandlerFactory` dynamically selects the appropriate handler for different content types (e.g., HTML, JSON).
 - **Singleton Pattern**: `WebScraper` will be a singleton class with given RateLimiter config
-
+- **Queued Request**: To handle millions of web scraping requests, we will queue these requests and process.
 ---
 
 ## Technologies Used
