@@ -26,5 +26,9 @@ public class Main {
             String result = future.get();  // Wait for the task to complete and get the result
             System.out.println("Scraped content: " + result);
         }
+
+        // Alternatively process the url after adding in queue
+        scraperService.queueUrls(urls);
+        scraperService.startProcessing();
     }
 }
