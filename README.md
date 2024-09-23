@@ -18,10 +18,11 @@ This project is a web scraper that can parse data from websites returning HTML a
 ## Features
 
 - **Asynchronous Scraping**: Handles multiple URLs concurrently using `ExecutorService`.
-- **Rate Limiting**: Prevents overwhelming servers by applying a configurable rate limit for scraping requests.
+- **Rate Limiting**: Prevents overwhelming servers by applying a configurable rate limit per domain for scraping requests.
 - **Supports Multiple Response Types**: Scrapes both HTML and JSON responses, with easy extendability for new content types.
 - **Observer Pattern**: Integrated logging using observers to track when scraping starts, succeeds, or fails.
 - **Factory Pattern**: A `ResponseHandlerFactory` dynamically selects the appropriate handler for different content types (e.g., HTML, JSON).
+- **Singleton Pattern**: `WebScraper` will be a singleton class with given RateLimiter config
 
 ---
 
@@ -43,7 +44,6 @@ src/
 │   ├── java/
 │   │   └── org/scraper/
 │   │       ├── ScraperService.java
-│   │       ├── WebScraper.java
 │   │       ├── RateLimiter.java
 │   │       └── handler/
 │   │           ├── HtmlResponseHandler.java
@@ -53,7 +53,8 @@ src/
 │   │           ├── ScraperObserver.java
 │   │           └── LoggingObserver.java
 │   │       └── command/
-│   │           └── ScrapingCommand.java
+│   │           ├── ScrapingCommand.java
+│   │           └── WebScraper.java
 │   └── resources/
 ├── test/
 │   └── java/
